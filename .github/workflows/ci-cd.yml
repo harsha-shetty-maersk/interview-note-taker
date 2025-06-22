@@ -73,6 +73,9 @@ jobs:
         cd backend
         mvn test
 
+    - name: List frontend directory contents
+      run: ls -l frontend && ls -l frontend/public
+
   build:
     name: Build and Push Docker Images
     runs-on: ubuntu-latest
