@@ -315,5 +315,5 @@ open http://localhost:3000
 ```
 
 Default admin credentials:
-- Username: admin
+- Username: admin2
 - Password: admin123 
