@@ -102,7 +102,6 @@ jobs:
 
     - name: List files in workspace
       run: ls -l
-      working-directory: ${{ github.workspace }}
 
     - name: Build backend image
       uses: docker/build-push-action@v5
@@ -114,7 +113,6 @@ jobs:
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
-      working-directory: ${{ github.workspace }}
 
     - name: Build frontend image
       uses: docker/build-push-action@v5
@@ -126,7 +124,6 @@ jobs:
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
-      working-directory: ${{ github.workspace }}
 
   deploy-staging:
     name: Deploy to Staging
