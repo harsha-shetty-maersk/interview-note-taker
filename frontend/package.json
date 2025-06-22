@@ -70,7 +70,7 @@
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "format": "prettier --write src/**/*.{ts,tsx,js,jsx,json,css,md}",
     "type-check": "tsc --noEmit",
-    "prepare": "husky install"
+    "prepare": "test -d ../.git && husky install || echo 'Skipping husky install: .git not found'"
   },
   "eslintConfig": {
     "extends": [
