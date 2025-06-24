@@ -17,6 +17,7 @@ interface InterviewFormProps {
   loading?: boolean;
   error?: string | null;
   submitLabel?: string;
+  isCompleted?: boolean;
 }
 
 const statusOptions = [
@@ -27,7 +28,7 @@ const statusOptions = [
 const inputClasses =
   "w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm";
 
-const InterviewForm: React.FC<InterviewFormProps> = ({ candidates, interviewers, onSubmit, loading, error, submitLabel }) => {
+const InterviewForm: React.FC<InterviewFormProps> = ({ candidates, interviewers, onSubmit, loading, error, submitLabel, isCompleted }) => {
   const getDefaultDate = () => {
     const d = new Date();
     d.setDate(d.getDate() + 1);
@@ -118,25 +119,43 @@ const InterviewForm: React.FC<InterviewFormProps> = ({ candidates, interviewers,
       </div>
       <div className="flex gap-4">
         <div className="flex-1">
-          <label className="form-label mb-2 block">Date</label>
+          <label htmlFor="date" className="form-label mb-2 block">Date</label>
           <input
+            id="date"
             type="date"
             name="date"
             value={values.date}
-            onChange={handleChange}
+            onChange={e => {
+              const today = new Date().toISOString().slice(0, 10);
+              if (e.target.value < today) {
+                handleChange({
+                  ...e,
+                  target: {
+                    ...e.target,
+                    value: today,
+                  },
+                });
+              } else {
+                handleChange(e);
+              }
+            }}
             className={inputClasses + " mt-1"}
             required
+            min={new Date().toISOString().slice(0, 10)}
+            disabled={!!isCompleted}
           />
         </div>
         <div className="flex-1">
-          <label className="form-label mb-2 block">Time</label>
+          <label htmlFor="time" className="form-label mb-2 block">Time</label>
           <input
+            id="time"
             type="time"
             name="time"
             value={values.time}
             onChange={handleChange}
             className={inputClasses + " mt-1"}
             required
+            disabled={!!isCompleted}
           />
         </div>
       </div>

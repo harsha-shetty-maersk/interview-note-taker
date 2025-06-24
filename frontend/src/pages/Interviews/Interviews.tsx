@@ -152,7 +152,15 @@ const Interviews: React.FC = () => {
       if (modalMode === 'add') {
         await createInterview(cleanPayload);
       } else if (selectedInterview) {
-        await updateInterview(selectedInterview.id, cleanPayload);
+        try {
+          await updateInterview(selectedInterview.id, cleanPayload);
+        } catch (err: any) {
+          if (err?.response?.status === 404) {
+            setFormError('Cannot change the date of a completed interview.');
+            return;
+          }
+          throw err;
+        }
       }
       setShowModal(false);
       fetchInterviews();
@@ -232,6 +240,12 @@ const Interviews: React.FC = () => {
 
       await updateInterview(id, payload);
       await fetchInterviews();
+    } catch (err: any) {
+      if (err?.response?.status === 404) {
+        setError('Cannot change the date of a completed interview.');
+        return;
+      }
+      throw err;
     } finally {
       setSavingId(null);
     }
@@ -524,8 +538,8 @@ const Interviews: React.FC = () => {
                       <input
                         type="date"
                         value={dayjs(interview.date).format('YYYY-MM-DD')}
-                        disabled={savingId === interview.id}
-                        className={`input-field font-medium ${savingId === interview.id ? 'opacity-60' : ''}`}
+                        disabled={savingId === interview.id || interview.status === 'COMPLETED'}
+                        className={`input-field font-medium ${(savingId === interview.id || interview.status === 'COMPLETED') ? 'opacity-60' : ''}`}
                         onClick={e => e.stopPropagation()}
                         onChange={e => handleInlineUpdate(interview.id, { date: dayjs(e.target.value).format('YYYY-MM-DDTHH:mm:ss') })}
                       />
@@ -619,6 +633,7 @@ const Interviews: React.FC = () => {
               loading={formLoading}
               error={formError}
               submitLabel={modalMode === 'add' ? 'Create Interview' : 'Save Changes'}
+              isCompleted={modalMode === 'edit' && selectedInterview?.status === 'COMPLETED'}
             />
           </div>
         </div>
